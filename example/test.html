@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>test redux</title>
+    <script type="text/javascript" src="./redux.js"></script>
+</head>
+<body>
+
+    <button type="button" name="button" id="inc">+++</button>
+    <button type="button" name="button" id="dec">---</button>
+    <h1 id="result">0</h1>
+
+    <script type="text/javascript">
+        const $ = (id) => document.getElementById(id);
+        const onChange = (count, haha) => $('result').innerHTML = count + 'vs' + haha;
+
+        const inc = () => ({ type: 'INC' });
+        const dec = () => ({ type: 'DEC' });
+
+        function counter(state, action) {
+            state = state || 0;
+
+            switch (action.type) {
+                case 'INC':
+                    return state + 1;
+                    break;
+                case 'DEC':
+                    return state - 1;
+                    break;
+                default:
+                    return state;
+            }
+        }
+
+        function haha(state, action) {
+            state = state || 0;
+
+            switch (action.type) {
+                case 'INC':
+                    return state - 1;
+                    break;
+                case 'DEC':
+                    return state + 1;
+                    break;
+                default:
+                    return state;
+            }
+        }
+
+        const reducer = combineReducers({
+            count: counter,
+            haha
+        });
+
+        const logMiddleware = ({ getState, dispatch}) => next => action => {
+            console.log(action.type);
+            next(action);
+        };
+
+        // const enhancer = applyMiddleware(logMiddleware);
+        // const store = enhancer(createStore)(reducer);
+
+        const store = createStore(reducer, compose(applyMiddleware(logMiddleware)));
+
+        store.subscribe(function() {
+            const state = store.getState();
+            onChange(state.count, state.haha);
+        });
+
+        $('inc').onclick = function() {
+            store.dispatch(inc());
+        }
+        $('dec').onclick = function() {
+            store.dispatch(dec());
+        }
+    </script>
+</body>
+</html>
