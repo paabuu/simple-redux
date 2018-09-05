@@ -17,7 +17,7 @@ const compose = (...fns) => {
     const lastFn = fns[fns.length - 1];
     const reset = fns.slice(0, -1);
 
-    return (...args) => reset.rightReduce((acc, fn) => fn(acc) , lastFb(...args));
+    return (...args) => reset.rightReduce((acc, fn) => fn(acc) , lastFn(...args));
 }
 
 export default compose;
